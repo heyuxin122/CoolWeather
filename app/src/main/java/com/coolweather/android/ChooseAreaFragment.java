@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
@@ -95,26 +97,28 @@ public class ChooseAreaFragment extends Fragment {
         });
         queryProvinces();
     }
-    //查询选中室内的所有县
-    private void queryCounties() {
-        titleText.setText(selectedCity.getCityName());
-        backButton.setVisibility(View.VISIBLE);
-        countyList = DataSupport.where("cityid=?", String.valueOf(selectedCity.getId()))
-                .find(County.class);
-        if (countyList.size() > 0) {
+
+
+
+    //查询全国所有的省
+    private void queryProvinces() {
+        titleText.setText("中国");
+        backButton.setVisibility(View.GONE);//隐藏返回按钮
+        provinceList = DataSupport.findAll(Province.class);//调用litepal查询接口来从数据库读取
+        if (provinceList.size()>0){
             dataList.clear();
-            for (County county : countyList) {
-                dataList.add(county.getCountyName());
+            for (Province province : provinceList){
+                dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            currentLevel = LEVEL_COUNTY;
-        } else {
-            int provinceCode = selectedProvince.getProvinceCode();
-            int cityCode = selectedCity.getCityCode();
-            String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
-            queryFromServer(address, "county");
+            currentLevel = LEVEL_PROVINCE;
+
+        }else {
+            String address ="http://guolin.tech/api/china";    // 请求地址
+            queryFromServer(address, "province");
         }
+
     }
     //查询选中县内所有的市
     private void queryCities() {
@@ -136,26 +140,29 @@ public class ChooseAreaFragment extends Fragment {
             queryFromServer(address, "city");
         }
     }
-    //查询全国所有的省
-    private void queryProvinces() {
-        titleText.setText("中国");
-        backButton.setVisibility(View.GONE);//隐藏返回按钮
-        provinceList = DataSupport.findAll(Province.class);//调用litepal查询接口来从数据库读取
-        if (provinceList.size()>0){
+    //查询选中室内的所有县
+    private void queryCounties() {
+        titleText.setText(selectedCity.getCityName());
+        backButton.setVisibility(View.VISIBLE);
+        countyList = DataSupport.where("cityid=?", String.valueOf(selectedCity.getId()))
+                .find(County.class);
+        if (countyList.size() > 0) {
             dataList.clear();
-            for (Province province : provinceList){
-                dataList.add(province.getProvinceName());
+            for (County county : countyList) {
+                dataList.add(county.getCountyName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            currentLevel = LEVEL_PROVINCE;
-
-        }else {
-            String address ="http://guolin.tech/api/china";    // 请求地址
-            queryFromServer(address, "province");
+            currentLevel = LEVEL_COUNTY;
+        } else {
+            int provinceCode = selectedProvince.getProvinceCode();
+            int cityCode = selectedCity.getCityCode();
+            String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
+            queryFromServer(address, "county");
         }
-
     }
+
+
     //根据传入的地址和类型去服务器查询省市县数据
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
@@ -201,12 +208,7 @@ public class ChooseAreaFragment extends Fragment {
             }
         });
     }
-    //关闭进度对话框
-    private void closeProgressDialog() {
-        if (progressDialog!= null){
-            progressDialog.dismiss();
-        }
-    }
+
     //显示进度对话框
     private void showProgressDialog() {
          if (progressDialog == null){
@@ -216,5 +218,10 @@ public class ChooseAreaFragment extends Fragment {
          }
     }
 
-
+    //关闭进度对话框
+    private void closeProgressDialog() {
+        if (progressDialog!= null){
+            progressDialog.dismiss();
+        }
+    }
 }
