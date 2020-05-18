@@ -13,6 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
+    <!-- 添加下拉刷新 -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <!-- 通过滚动方式查看屏幕以外内容 -->
     <ScrollView
         android:id="@+id/weather_layout"
@@ -33,5 +38,6 @@
             <include layout="@layout/suggestion"/>
         </LinearLayout>
     </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout >
