@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
 import com.coolweather.android.db.Province;
+import com.coolweather.android.gson.NewsList;
 import com.coolweather.android.gson.Weather;
 import com.google.gson.Gson;
 
@@ -92,5 +93,11 @@ public class Utility {
         }
         return null;
     }
+    public static NewsList parseJsonWithGson(final String requestText){
+        Gson gson = new Gson();
+        return gson.fromJson(requestText, NewsList.class);
+    }
+
+
 }
 
